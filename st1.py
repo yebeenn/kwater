@@ -55,26 +55,23 @@ def main():
         else:
             st.write("시트2가 없습니다.")
 
+        buffer = BytesIO()
 
-            buffer = BytesIO()
+        with pd.ExcelWriter(buffer) as writer:
+            df1.to_excel(writer, sheet_name='Sheet1', index=False, header=None)
+            if df2 is not None:
+                df2.to_excel(writer, sheet_name='Sheet2', index=False, header=None)
 
-            with pd.ExcelWriter(buffer) as writer:
-                df1.to_excel(writer, sheet_name='Sheet1', index=False, header=None)
-                if df2 is not None:
-                    df2.to_excel(writer, sheet_name='Sheet2', index=False, header=None)
+        buffer.seek(0)
 
-            buffer.seek(0)
-
-            # Provide download button for the user
-            if st.download_button(
-                    label="다운로드",
-                    data=buffer,
-                    file_name="output.xlsx",
-                    key="download_button",
-                    help="다운로드 버튼을 클릭하여 Excel 파일을 다운로드하세요."
-            ):
-                # Display a success message after download
-                st.success("다운로드 완료! 파일명: output.xlsx")
+        if st.download_button(
+                label="다운로드",
+                data=buffer,
+                file_name="output.xlsx",
+                key="download_button",
+                help="다운로드 버튼을 클릭하여 Excel 파일을 다운로드하세요."
+        ):
+            st.success("다운로드 완료! 파일명: output.xlsx")
 
 
 if __name__ == "__main__":
